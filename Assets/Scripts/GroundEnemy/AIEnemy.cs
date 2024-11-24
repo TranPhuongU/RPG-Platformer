@@ -44,6 +44,6 @@ public class AIEnemy : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(groundCheck.transform.position, circleRadius);    
+        Gizmos.DrawWireSphere(groundCheck.transform.position, circleRadius);
     }
 }

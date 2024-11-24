@@ -77,7 +77,7 @@ public class Player2 : MonoBehaviour
         }
     }
 
-    ////dùng hàm FixeduUpdate làm hình ảnh bị mờ khi di chuyển
+    //dùng hàm FixeduUpdate làm hình ảnh bị mờ khi di chuyển
     //private void Awake()
     //{
     //    rb = GetComponent<Rigidbody2D>();

@@ -67,19 +67,33 @@ public class TouchingDirection : MonoBehaviour
     public Vector2 WallCheckDirection => gameObject.transform.localScale.x > 0 ? Vector2.right : Vector2.left;
 
 
-    private void Awake()
-    {
-        animator = GetComponent<Animator>();  
-        touchingCol = GetComponent<CapsuleCollider2D>();
-    }
+    //private void Awake()
+    //{
+    //    animator = GetComponent<Animator>();  
+    //    touchingCol = GetComponent<CapsuleCollider2D>();
+    //}
 
-    private void FixedUpdate()
+    //private void FixedUpdate()
+    //{
+    //    // VA CHẠM VỚI GROUND
+    //    IsGrounded = touchingCol.Cast(Vector2.down, castFilter, groundHits, groundDistance) > 0;
+    //    //VA CHẠM VỚI TƯỜNG
+    //    IsOnWall = touchingCol.Cast(WallCheckDirection, castFilter, wallHits,wallDistance) > 0;
+    //    // VA CHẠM VỚI TRẦN NHÀ
+    //    IsOnCeiling = touchingCol.Cast(Vector2.up, castFilter, ceilingHits, ceilingDistance) > 0;
+    //}
+    private void Update()
     {
         // VA CHẠM VỚI GROUND
         IsGrounded = touchingCol.Cast(Vector2.down, castFilter, groundHits, groundDistance) > 0;
         //VA CHẠM VỚI TƯỜNG
-        IsOnWall = touchingCol.Cast(WallCheckDirection, castFilter, wallHits,wallDistance) > 0;
+        IsOnWall = touchingCol.Cast(WallCheckDirection, castFilter, wallHits, wallDistance) > 0;
         // VA CHẠM VỚI TRẦN NHÀ
         IsOnCeiling = touchingCol.Cast(Vector2.up, castFilter, ceilingHits, ceilingDistance) > 0;
+    }
+    private void Start()
+    {
+        animator = GetComponent<Animator>();
+        touchingCol = GetComponent<CapsuleCollider2D>();
     }
 }

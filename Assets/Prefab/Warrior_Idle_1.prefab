@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 926848224434952157}
   - component: {fileID: 6719062559123168588}
   - component: {fileID: 9065869271956229746}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Warrior_Idle_1
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -219,7 +219,19 @@ MonoBehaviour:
     m_ActionId: 84c844e1-3e44-4857-8f04-9c73ba835d69
     m_ActionName: Player/Look[/Mouse/delta]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6719062559123168588}
+        m_TargetAssemblyTypeName: Player2, Assembly-CSharp
+        m_MethodName: OnAttack
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 5758d7ab-24e6-4e90-b190-deb226b37dbc
     m_ActionName: Player/Attack[/Mouse/leftButton]
   - m_PersistentCalls:
@@ -296,7 +308,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isFacingRight: 1
-  speed: 20
+  speed: 23
   _isMoving: 0
   jumpForce: 40
 --- !u!114 &9065869271956229746
@@ -313,14 +325,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   castFilter:
     useTriggers: 0
-    useLayerMask: 0
+    useLayerMask: 1
     useDepth: 0
     useOutsideDepth: 0
     useNormalAngle: 0
     useOutsideNormalAngle: 0
     layerMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 256
     minDepth: 0
     maxDepth: 0
     minNormalAngle: 0
