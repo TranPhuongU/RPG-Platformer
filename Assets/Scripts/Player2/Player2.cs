@@ -24,6 +24,7 @@ public class Player2 : MonoBehaviour
     {
         get
         {
+            if(CanMove)
             {
                 if (IsMoving && !touchingDirection.IsOnWall)
                 {
@@ -31,8 +32,14 @@ public class Player2 : MonoBehaviour
                 }
                 else
                 {
+                    // đứng yên
                     return 0;
                 }
+            }
+            else
+            {
+                // tốc độ di chuyển di attack
+                return 10;
             }
         }
     }
@@ -62,21 +69,42 @@ public class Player2 : MonoBehaviour
             _isFacingRight = value;
         } 
     }
+    public bool CanMove
+    {
+        get
+        {
+            return animator.GetBool("canMove");
+        }
+    }
 
-    private void Awake()
+    ////dùng hàm FixeduUpdate làm hình ảnh bị mờ khi di chuyển
+    //private void Awake()
+    //{
+    //    rb = GetComponent<Rigidbody2D>();
+    //    animator = GetComponent<Animator>();
+    //    touchingDirection = GetComponent<TouchingDirection>();
+    //}
+    private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         touchingDirection = GetComponent<TouchingDirection>();
     }
-    
-    private void FixedUpdate()
+
+    private void Update()
     {
-        // Di chuyển của player
         rb.velocity = new Vector2(moveInput.x * CurrentSpeed, rb.velocity.y);
 
         animator.SetFloat(AnimationStrings.yVelocity, rb.velocity.y);
     }
+    //dùng hàm FixeduUpdate làm hình ảnh bị mờ khi di chuyển
+    //private void FixedUpdate()
+    //{
+    //    // Di chuyển của player
+    //    rb.velocity = new Vector2(moveInput.x * CurrentSpeed, rb.velocity.y);
+
+    //    animator.SetFloat(AnimationStrings.yVelocity, rb.velocity.y);
+    //}
     public void OnMove(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
@@ -101,10 +129,17 @@ public class Player2 : MonoBehaviour
     public void OnJump(InputAction.CallbackContext context)
     {
         //todo check if alive as well
-        if (context.started && touchingDirection.IsGrounded)
+        if (context.started && touchingDirection.IsGrounded && CanMove)
         {
             animator.SetTrigger(AnimationStrings.jump);
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+        }
+    }
+    public void OnAttack(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            animator.SetTrigger("Attack");
         }
     }
     
