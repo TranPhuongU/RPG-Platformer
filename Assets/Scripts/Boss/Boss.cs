@@ -3,13 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D), typeof(TouchingDirection))]
+[RequireComponent(typeof(Rigidbody2D), typeof(TouchingDirection), typeof(Dameable))]
 public class Boss : MonoBehaviour
 {
     public float walkStopRate; //boss sẽ di chuyển thêm 1 xíu khi tấn công = 0.05 di lên 1 xíu, 1 là dừng hẳn
     public float walkSpeed;
     Rigidbody2D rb;
     public  DetectionZone attackZone;
+
+    Dameable dameable;
 
     Animator animator;
     TouchingDirection touchingDirection;
@@ -86,6 +88,7 @@ public class Boss : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         touchingDirection = GetComponent<TouchingDirection>();
         animator = GetComponent<Animator>();
+        dameable = GetComponent<Dameable>();
     }
     private void FixedUpdate()
     {
@@ -93,12 +96,16 @@ public class Boss : MonoBehaviour
         {
             FlipDirection();
         }
-        if (CanMove)
+        if (!dameable.LockVelocity)
         {
-            rb.velocity = new Vector2(walkSpeed * walkDirectionVector.x, rb.velocity.y);
-        }else
-        {
-            rb.velocity = new Vector2(Mathf.Lerp(rb.velocity.x,0,walkStopRate),rb.velocity.y);
+            if (CanMove)
+            {
+                rb.velocity = new Vector2(walkSpeed * walkDirectionVector.x, rb.velocity.y);
+            }
+            else
+            {
+                rb.velocity = new Vector2(Mathf.Lerp(rb.velocity.x, 0, walkStopRate), rb.velocity.y);
+            }
         }
     }
 
@@ -116,5 +123,10 @@ public class Boss : MonoBehaviour
         {
             Debug.LogError("Current walk direction is not set to legal values");
         }
+    }
+    public void OnHit(int damage, Vector2 knockback)
+    {
+        dameable.LockVelocity = true;
+        rb.velocity = new Vector2(knockback.x, rb.velocity.y + knockback.y);
     }
 }

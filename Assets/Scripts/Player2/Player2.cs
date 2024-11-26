@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(Rigidbody2D), typeof(TouchingDirection))] 
+[RequireComponent(typeof(Rigidbody2D), typeof(TouchingDirection),typeof(Dameable))] 
 public class Player2 : MonoBehaviour
 {
     TouchingDirection touchingDirection;
@@ -13,6 +13,8 @@ public class Player2 : MonoBehaviour
     //public float runSpeed;
     Animator animator;
     Rigidbody2D rb;
+
+    Dameable dameable;
 
     [SerializeField]
     private bool _isMoving = false;
@@ -39,7 +41,7 @@ public class Player2 : MonoBehaviour
             else
             {
                 // tốc độ di chuyển di attack
-                return 10;
+                return 5;
             }
         }
     }
@@ -76,7 +78,25 @@ public class Player2 : MonoBehaviour
             return animator.GetBool("canMove");
         }
     }
+    public bool IsAlive
+    {
+        get
+        {
+            return animator.GetBool("isAlive");
+        }
+    }
 
+    public bool LockVelocity
+    {
+        get
+        {
+            return animator.GetBool("lockVelocity");
+        }
+        set
+        {
+            animator.SetBool("lockVelocity", value);
+        }
+    }
     //dùng hàm FixeduUpdate làm hình ảnh bị mờ khi di chuyển
     //private void Awake()
     //{
@@ -89,13 +109,26 @@ public class Player2 : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         touchingDirection = GetComponent<TouchingDirection>();
+        dameable = GetComponent<Dameable>();
     }
 
-    private void Update()
+    //private void Update()
+    //{
+    //    // bị đánh thì không thể di chuyển
+    //    if (!LockVelocity)
+    //    {
+    //        rb.velocity = new Vector2(moveInput.x * CurrentSpeed, rb.velocity.y);
+    //    }
+    //    animator.SetFloat("yVelocity", rb.velocity.y);
+    //}
+    private void FixedUpdate()
     {
-        rb.velocity = new Vector2(moveInput.x * CurrentSpeed, rb.velocity.y);
-
-        animator.SetFloat(AnimationStrings.yVelocity, rb.velocity.y);
+        // bị đánh thì không thể di chuyển
+        if (!dameable.LockVelocity)
+        {
+            rb.velocity = new Vector2(moveInput.x * CurrentSpeed, rb.velocity.y);
+        }
+        animator.SetFloat("yVelocity", rb.velocity.y);
     }
     //dùng hàm FixeduUpdate làm hình ảnh bị mờ khi di chuyển
     //private void FixedUpdate()
@@ -108,9 +141,17 @@ public class Player2 : MonoBehaviour
     public void OnMove(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
-        IsMoving = moveInput != Vector2.zero;
-        SetFacingDirection(moveInput);
+        if(IsAlive)
+        {
+            IsMoving = moveInput != Vector2.zero;
+            SetFacingDirection(moveInput);
+        }
+        else
+        {
+            IsMoving = false;
+        }
     }
+
     //Quay hướng mặt player 
     public void SetFacingDirection(Vector2 moveInput)
     {
@@ -141,6 +182,12 @@ public class Player2 : MonoBehaviour
         {
             animator.SetTrigger("Attack");
         }
+    }
+    // 
+    public void OnHit(int damage, Vector2 knockback)
+    {
+        
+        rb.velocity = new Vector2(knockback.x, rb.velocity.y + knockback.y);
     }
     
 }
