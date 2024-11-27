@@ -7,9 +7,12 @@ using UnityEngine;
 public class Boss : MonoBehaviour
 {
     public float walkStopRate; //boss sẽ di chuyển thêm 1 xíu khi tấn công = 0.05 di lên 1 xíu, 1 là dừng hẳn
-    public float walkSpeed;
+    public float walkAcceleration;
+
+    public float maxSpeed;
     Rigidbody2D rb;
     public  DetectionZone attackZone;
+    public DetectionZone cliffDetectionZone;
 
     Dameable dameable;
 
@@ -54,6 +57,14 @@ public class Boss : MonoBehaviour
         } 
     }
 
+    public float AttackColdown { get
+        {
+            return animator.GetFloat("attackColdown");
+        } private set 
+        {
+            animator.SetFloat("attackColdown", Mathf.Max(value, 0));
+        } }
+
     public bool CanMove
     {
         get
@@ -82,6 +93,10 @@ public class Boss : MonoBehaviour
     private void Update()
     {
         HasTarget = attackZone.detectedColliders.Count > 0;
+        if(AttackColdown > 0)
+        {
+            AttackColdown -= Time.deltaTime;
+        }
     }
     private void Awake()
     {
@@ -92,7 +107,7 @@ public class Boss : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if (touchingDirection.IsGrounded && touchingDirection.IsOnWall)
+        if (touchingDirection.IsGrounded && touchingDirection.IsOnWall || cliffDetectionZone.detectedColliders.Count == 0)
         {
             FlipDirection();
         }
@@ -100,7 +115,8 @@ public class Boss : MonoBehaviour
         {
             if (CanMove)
             {
-                rb.velocity = new Vector2(walkSpeed * walkDirectionVector.x, rb.velocity.y);
+                // Accelerate toward max Speed
+                rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x + (walkAcceleration * walkDirectionVector.x * Time.fixedDeltaTime), -maxSpeed, maxSpeed), rb.velocity.y);
             }
             else
             {
@@ -129,4 +145,12 @@ public class Boss : MonoBehaviour
         dameable.LockVelocity = true;
         rb.velocity = new Vector2(knockback.x, rb.velocity.y + knockback.y);
     }
+    //Enemy quay đầu khi đi quá ground nhưng dùng Unity Event để gọi
+    //public void OnCliffDetected()
+    //{
+    //    if (touchingDirection.IsGrounded)
+    //    {
+    //        FlipDirection();
+    //    }
+    //}
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HitBox : MonoBehaviour
+public class SwordAttack : MonoBehaviour
 {
     public int attackDamage = 10;
     // bị đánh sẽ lùi về sau 1 chút

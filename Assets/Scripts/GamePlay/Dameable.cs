@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -105,6 +106,8 @@ public class Dameable : MonoBehaviour
             LockVelocity = true;
             animator.SetTrigger("hit");
             dameableHit?.Invoke(damage, knockback);
+            CharacterEvents.characterDamaged.Invoke(gameObject, damage);
+
            return true;
         }
       else
